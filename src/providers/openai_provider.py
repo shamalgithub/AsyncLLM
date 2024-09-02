@@ -1,4 +1,5 @@
-from abstract_basellm import BaseLLMProvider
+from src.providers.abstract_basellm import BaseLLMProvider
+from src.utils.pydantic_to_json import transform_schema
 import httpx 
 from typing import List , Dict
 import json 
@@ -24,6 +25,27 @@ class OpenAIProvider(BaseLLMProvider):
             "model":model,
             "messages" : messages ,
             "stream" : False, 
+        }
+        try:
+            response = await self.client.post(url=url , json=data , headers=headers)
+            response.raise_for_status()
+            return response.json()
+        except httpx.RequestError as e: 
+            return f"ERROR {e}"
+    
+
+
+
+    async def structured_output(self , 
+                              model:str , 
+                              messages:List[str] , response_format):
+        url = self.base_url
+        headers = self.headers
+        data = {
+            "model":model,
+            "messages" : messages ,
+            "stream" : False, 
+            "response_format" : transform_schema(response_format)
         }
         try:
             response = await self.client.post(url=url , json=data , headers=headers)
@@ -79,4 +101,8 @@ class OpenAIProvider(BaseLLMProvider):
                                     yield f"ERROR decoding line {line}"
         except httpx.RequestError as e :
             yield f"ERROR {e}"
+        
+
+
+
 
