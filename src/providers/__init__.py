@@ -1,5 +1,7 @@
 from .openai_provider import OpenAIProvider
 from .anthropic_provider import ClaudeProvider
+import sys 
+import asyncio
 
 def get_supported_providers():
     supported_providers = ['openai' , 'claude']
@@ -14,4 +16,6 @@ def get_provider(provider_name: str, api_key: str):
     else:
         raise ValueError(f"Unknown provider: {provider_name}. \nSupported Providers : {get_supported_providers()}")
     
-
+#Windows has a issue when running asyncio code - to mitigate this use the following !!
+if sys.platform.startswith('win'):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())

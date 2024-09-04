@@ -8,8 +8,6 @@ transformed_schema = transform_schema(pydantic_schema)
 print(json.dumps(transformed_schema, indent=2))
 """
 
-
-
 def camel_to_snake(name: str) -> str:
     return ''.join(['_' + char.lower() if char.isupper() else char for char in name]).lstrip('_')
 

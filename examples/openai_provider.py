@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from src.providers import get_provider
 import logging
 from pydantic import BaseModel
-
+import sys 
 """
 OpenAI Provider Usage Examples
 
@@ -119,7 +119,7 @@ async def main():
     tasks = [
         asyncio.create_task(chat_completion_example()),
         asyncio.create_task(function_call_example()),
-        asyncio.create_task(stream_chat_completion_example()),
+        # asyncio.create_task(stream_chat_completion_example()),
         asyncio.create_task(structured_output_example())
     ]
     
@@ -127,6 +127,8 @@ async def main():
         await asyncio.gather(*tasks)
     except Exception as e:
         logger.error(f"Error in main execution: {e}")
+
+
 
 if __name__ == "__main__":
     asyncio.run(main())
