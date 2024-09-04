@@ -75,28 +75,29 @@ async def structured_output_example():
 
 async def function_call_example():
     try:
-        model = "gpt-4-mini"
+        model = "gpt-4-turbo"
         messages = [
-            {"role": "user", "content": "What's the weather like in New York?"}
+            {"role": "user", "content": "Translate 'Hello, how are you?' to French."}
         ]
         tools = [
             {
                 "type": "function",
                 "function": {
-                    "name": "get_weather",
-                    "description": "Get the current weather in a given location",
+                    "name": "translate_text",
+                    "description": "Translate text from one language to another",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "location": {"type": "string", "description": "The city and state, e.g. San Francisco, CA"},
-                            "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+                            "text": {"type": "string", "description": "The text to be translated"},
+                            "source_language": {"type": "string", "description": "The language of the input text (ISO 639-1 code)"},
+                            "target_language": {"type": "string", "description": "The language to translate into (ISO 639-1 code)"}
                         },
-                        "required": ["location"]
+                        "required": ["text", "target_language"]
                     }
                 }
             }
         ]
-        tool_choice = {"type": "function", "function": {"name": "get_weather"}}
+        tool_choice = {"type": "function", "function": {"name": "translate_text"}}
         
         response = await openai_provider.function_call(model, messages, tools, tool_choice)
         logger.info(f"Function Call Response: {response}")
@@ -117,9 +118,9 @@ async def stream_chat_completion_example():
 
 async def main():
     tasks = [
-        asyncio.create_task(chat_completion_example()),
+        # asyncio.create_task(chat_completion_example()),
         asyncio.create_task(function_call_example()),
-        # asyncio.create_task(stream_chat_completion_example()),
+        #asyncio.create_task(stream_chat_completion_example()),
         asyncio.create_task(structured_output_example())
     ]
     
